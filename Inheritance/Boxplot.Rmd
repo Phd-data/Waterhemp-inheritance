@@ -1,0 +1,68 @@
+---
+title: "Inhitance"
+author: "Maxwel C. Oliveira"
+date: "January 12, 2017"
+output: word_document
+---
+```{r}
+library(vioplot)
+```
+
+
+```{r}
+
+```
+
+
+
+
+```{r Dose 105}
+Data=read.csv("Data105.csv")
+str(Data)
+shapiro.test(Data$Biomass)
+```
+
+
+```{r}
+Data$LogBiomass=log(Data$Biomass)
+shapiro.test(Data$LogBiomass)
+```
+
+
+
+```{r Dose 420}
+Data420=read.csv("Dose420.csv")
+str(Data420)
+shapiro.test(Data420$Biomass)
+```
+
+
+```{r}
+R420<-Data420$Biomass[Data420$Biotype=="R"]
+S420<-Data420$Biomass[Data420$Biotype=="S"]
+F18420<-Data420$Biomass[Data420$Biotype=="F1-8"]
+F19420<-Data420$Biomass[Data420$Biotype=="F1-9"]
+F113420<-Data420$Biomass[Data420$Biotype=="F1-13"]
+F29420<-Data420$Biomass[Data420$Biotype=="F2-9"]
+F213420<-Data420$Biomass[Data420$Biotype=="F2-13"]
+BC8420<-Data420$Biomass[Data420$Biotype=="BC-8"]
+
+vioplot(R420, S420, F18420, F19420, F113420, F29420, F213420, BC8420)
+```
+
+```{r Dose 420, echo=FALSE}
+x11()
+boxplot(Biomass~Biotype, ylab="Biomass", cex.lab=1.5, data=Data420)
+```
+
+
+```{r Dose 26}
+Data=read.csv("Dose26.csv")
+str(Data)
+shapiro.test(Data420$Biomass)
+```
+
+```{r Dose 26, echo=FALSE}
+x11()
+boxplot(Biomass~Biotype, ylab="Biomass", cex.lab=1.5, data=Data)
+```

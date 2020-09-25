@@ -1,0 +1,78 @@
+---
+title: "Dose Response"
+author: "Maxwel C. Oliveira"
+date: "January 12, 2017"
+output: word_document
+---
+
+  
+  
+```{r loadData, message=FALSE, warning=FALSE, include=FALSE}
+Data=read.csv("Dose.csv")
+str(Data)
+```
+
+
+
+```{r LoadPackage drc, warning=FALSE, echo=FALSE, include=FALSE}
+library(drc)
+```
+
+```{r Control, warning=FALSE, echo=FALSE, include=FALSE}
+Control=drm(IR~Rate, Biotype, fct=W1.3 (fixed=c(NA,100,NA)), data=Data)
+summary(Control)
+
+
+x11()
+par(mar=c(5,5,1,2), mgp=c(3.0,1,0))
+plot(Control, col=c(1,2,3,4,5,6,7), xlim=c(0,1000), lwd=2, cex=2, xlab = expression(paste("Mesotrione (g ai ha "^"-1",")")), cex.axis=1.5, legend = F,
+     ylab = expression(paste("Waterhemp control (%)")), type="none",
+     ylim=c(0,100), cex.lab=1.5, font.axis=2)
+
+legend('topleft', c("Resistant","Resistant + aminotriozole", "Susceptible", "SxR - 11 + aminotriozole", "SxR - 13", "SxR - 9", "RxS - 5"), col=c(1,2,3,4,5,6,7), lwd=2, bty="n", cex=1.5, lty=c(1,2,3,4,5,6,7))
+
+
+ED(Control, c(50), type="absolute")
+
+```
+
+```{r Biomass Reduction, warning=FALSE, echo=FALSE, include=FALSE}
+Biomass=drm(BR~Rate, Biotype, fct=W1.3 (fixed=c(NA,100,NA)), data=Data)
+summary(Biomass)
+
+
+x11()
+par(mar=c(5,5,1,2), mgp=c(3.0,1,0))
+plot(Biomass, col=c(1,2,3,4,5,6,7), xlim=c(0,10000), lwd=2, cex=2, xlab = expression(paste("Mesotrione (g ai ha "^"-1",")")), cex.axis=1.5, legend = F,
+     ylab = expression(paste("Biomass Redcution (%)")), type="none",
+     ylim=c(0,100), cex.lab=1.5, font.axis=2)
+
+legend('topleft', c("Resistant","Resistant + aminotriozole", "Susceptible", "SxR - 11 + aminotriozole", "SxR - 13", "SxR - 9", "RxS - 5"), col=c(1,2,3,4,5,6,7), lwd=2, bty="n", cex=1.5, lty=c(1,2,3,4,5,6,7))
+
+
+ED(Biomass, c(50), type="absolute")
+EDcomp(Biomass, c(50,50), type="absolute")
+```
+
+
+
+
+```{r Model selection, warning=FALSE, echo=FALSE, include=FALSE}
+mselect(Model, list(LL.3(), LL.5(), W1.3(), l4(), W2.4(), W2.3())
+, nested = FALSE, sorted = c("IC", "Res var", "Lack of fit", "no"), linreg = FALSE, icfct = AIC)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

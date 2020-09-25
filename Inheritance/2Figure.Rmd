@@ -1,0 +1,232 @@
+---
+title: "2Figures"
+author: "Maxwel C. Oliveira"
+date: "May 2, 2017"
+output: html_document
+---
+
+
+```{r, include=FALSE}
+library(ggplot2)
+library(gridExtra)
+library(cowplot)
+```
+
+```{r Dose 26, include=FALSE}
+Data=read.csv("Dose26.csv")
+str(Data)
+head(Data)
+```
+
+```{r, include=FALSE}
+Data$Pedigree <-factor(Data$Pedigree, levels=c("R", "S", "F1", "F2", "BC"), labels=c("R", "S", "F1", "F2", "BC"))
+
+
+Data$Survival<-factor(Data$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+p1<-ggplot(Data, aes(y=Biomass, x=Pedigree)) + 
+geom_violin(fill="grey95") +
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant Injury Level") +
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="") +
+  coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(), panel.border=element_rect(fill=NA, color="black", size=0.7, linetype = "solid"),
+  legend.position=c(0.88,0.80), legend.text = element_text(size = 10, colour = "black"), legend.title = element_text(size = 11, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA), 
+legend.background = element_rect(fill =NULL)) +
+  annotate("text", x = 1.6, y = 0.8, alpha=1, label =as.character(expression(italic(paste("Below-label mesotrione dose (26 g ai ha "^"-1",")")))), parse=T) 
+```
+
+```{r Dose 105, include=FALSE}
+Data1=read.csv("Dose105.csv") 
+str(Data1)
+```
+
+
+```{r}
+Data1$Pedigree <-factor(Data1$Pedigree, levels=c("R", "S", "F1", "F2", "BC"), labels=c("R", "S", "F1", "F2", "BC"))
+
+
+Data1$Survival<-factor(Data1$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+
+```{r Violin Plot, echo=FALSE}
+p3<-ggplot(Data1, aes(y=Biomass, x=Pedigree)) + 
+geom_violin(fill="grey95") +
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") +
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="") +
+   coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"),
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(), panel.border=element_rect(fill=NA, color="black", size=0.7, linetype = "solid"),
+  legend.position=c(3.0,6.85)) +
+  annotate("text", x = 1.9, y = 0.8, alpha=1, label =as.character(expression(italic(paste("Recommended mesotrione label dose  (105 g ai ha "^"-1",")")))), parse=T) 
+```
+
+```{r Dose 420, include=FALSE}
+Data2=read.csv("Dose420.csv")
+str(Data2)
+```
+
+```{r}
+Data2$Pedigree <-factor(Data2$Pedigree, levels=c("R", "S", "F1", "F2", "BC"), labels=c("R", "S", "F1", "F2", "BC"))
+
+
+Data2$Survival<-factor(Data2$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+p5<-ggplot(Data2, aes(y=Biomass, x=Pedigree)) + 
+geom_violin(fill="grey95") + 
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") + 
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="Family") + 
+   coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"),  
+        panel.grid.major = element_line(color = "white"),  
+  panel.grid.minor = element_blank(), panel.border=element_rect(fill=NA, color="black", size=0.7, linetype = "solid"),
+  legend.position=c(1.90,4.85), legend.text = element_text(size = 10, colour = "black"), legend.title = element_text(size = 11, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA), 
+legend.background = element_rect(fill =NULL)) +
+  annotate("text", x = 1.5, y = 0.8, alpha=1, label =as.character(expression(italic(paste("High mesotrione dose (420 g ai ha "^"-1",")")))), parse=T) 
+```
+
+```{r}
+A<-plot_grid(p1, p3, p5, nrow=3, ncol=1, vjust=2, labels = c('A', 'B','C')) 
+```
+
+```{r}
+ggsave("Combined.tiff", plot = A, device = NULL, path = NULL,
+  scale = 1, units="in", width=8, height=10, dpi=
+    800)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r Dose 26, include=FALSE}
+Data=read.csv("Dose26.csv")
+str(Data)
+head(Data)
+```
+
+```{r}
+Data$Population <-factor(Data$Population, levels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"), labels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"))
+
+Data$Survival<-factor(Data$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+p2<-ggplot(Data, aes(y=Biomass, x=Population)) + 
+geom_violin(fill="grey95") +
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") +
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="") +
+  coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"),
+        axis.title=element_text(size=16, face="bold"),
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(),
+  legend.position=c(0.90,0.80), legend.text = element_text(size = 10, colour = "black"), legend.title = element_text(size = 11, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA), 
+legend.background = element_rect(fill =NULL)) +
+  annotate("text", x = 2.7, y = 0.8, alpha=1, label =as.character(expression(italic(paste("Below-label mesotrione dose (26 g ai ha "^"-1",")")))), parse=T) 
+```
+
+
+
+```{r Dose 105, include=FALSE}
+Data1=read.csv("Dose105.csv") 
+str(Data1)
+```
+
+```{r}
+Data1$Population <-factor(Data1$Population, levels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"), labels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"))
+
+Data1$Survival<-factor(Data1$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+p4<-ggplot(Data1, aes(y=Biomass, x=Population)) + 
+geom_violin(fill="grey95") +
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") +
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="") +
+   coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"),
+        axis.title=element_text(size=16, face="bold"),
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(),
+  legend.position=c(9.88,9.85), legend.text = element_text(size = 8, colour = "black"), legend.title = element_text(size = 10, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA),
+legend.background = element_rect(fill =NA)) +
+  annotate("text", x = 3.2, y = 0.8, alpha=1, label =as.character(expression(italic(paste("Recommended mesotrione label dose  (105 g ai ha "^"-1",")")))), parse=T) 
+```
+
+
+
+```{r Dose 420, include=FALSE}
+Data2=read.csv("Dose420.csv")
+str(Data2)
+```
+
+```{r}
+Data2$Population <-factor(Data2$Population, levels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"), labels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"))
+
+Data2$Survival<-factor(Data2$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+p6<-ggplot(Data2, aes(y=Biomass, x=Population)) + 
+geom_violin(fill="grey95") + 
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") + 
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="Family") + 
+   coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"),
+        axis.title=element_text(size=16, face="bold"),
+        panel.background = element_rect(fill="white", color = "black"),  
+        panel.grid.major = element_line(color = "white"),  
+  panel.grid.minor = element_blank(),
+  legend.position=c(8.90,8.85), legend.text = element_text(size = 8, colour = "black"), legend.title = element_text(size = 10, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA), 
+legend.background = element_rect(fill =NULL)) +
+  annotate("text", x = 2.4, y = 0.8, alpha=1, label =as.character(expression(italic(paste("High mesotrione dose (420 g ai ha "^"-1",")")))), parse=T) 
+```
+
+
+```{r}
+B<-plot_grid(p2, p4, p6, nrow=3, ncol=1, vjust=2, labels = c('A', 'B','C')) 
+```
+
+```{r}
+ggsave("Family.tiff", plot = B, device = NULL, path = NULL,
+  scale = 1, units="in", width=14, height=12, dpi=300)
+
+```
+
+
+

@@ -1,0 +1,312 @@
+---
+title: "Dose-Response in ggplot2"
+author: "Maxwel C. Oliveira"
+date: "March 9, 2017"
+output: html_document
+---
+
+
+```{r loadData, message=FALSE, warning=FALSE, include=FALSE}
+Data=read.csv("Dose.csv")
+str(Data)
+```
+
+
+
+```{r LoadPackage drc, warning=FALSE, echo=FALSE, include=FALSE}
+library(drc)
+library(ggplot2)
+library(cowplot)
+```
+
+
+```{r Control model, echo=FALSE, message=FALSE, warning=FALSE}
+Control=drm(IR~Rate, Biotype, fct=l3 (fixed=c(NA,100,NA)), data=Data)
+summary(Control)
+plot(Control)
+```
+
+```{r Model selection, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+mselect(Control, list(LL.3(), LL.5(), l3(), l4(), W2.4(), W2.3()),
+nested = FALSE, sorted = c("IC", "Res var", "Lack of fit", "no"), linreg = FALSE, icfct = AIC)
+```
+
+```{r}
+ED(Control, c(50,90), type="absolute")
+EDcomp(Control, c(50,50), type="absolute")
+```
+
+
+```{r Control prediction, include=FALSE}
+newdata <- expand.grid(Rate=exp(seq(log(0.5), log(1680), length=1680)))
+newdata1 <- data.frame(Biotype =c("R"), newdata)
+newdata2 <- data.frame(Biotype =c("S"), newdata)
+newdata3 <- data.frame(Biotype =c("RS/F1-5"), newdata)
+newdata4 <- data.frame(Biotype =c("SR/F1-9"), newdata)
+newdata5 <- data.frame(Biotype =c("SR/F1-13"), newdata)
+
+
+nd=rbind(newdata1, newdata2, newdata3, newdata4, newdata5)
+
+pm <- predict(Control, newdata=nd, interval="confidence")
+
+
+nd$p <- pm[,1] 
+nd$pmin <- pm[,2] 
+nd$pmax <- pm[,3] 
+
+
+Data$Rate0 <- Data$Rate
+Data$Rate0[Data$h0==0] <- 0.5
+```
+
+
+
+```{r Control Plot, message=FALSE, warning=FALSE}
+a<-ggplot(Data, aes(x = Rate, y = IR, color=Biotype)) + geom_line(data=nd, aes(x=Rate, y=p, linetype=Biotype), size=1.3) +
+  labs(fill="", y="Control (%)", x=expression(bold(paste("Mesotrione (g ai ha "^"-1",")")))) +
+  scale_colour_manual(values = c("red", "green", "blue", "black", "orange")) + 
+  scale_x_continuous(breaks=c(1, 5, 12, 26, 53, 105, 210, 420, 840, 1680)) + coord_trans(x="log") +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(),
+  legend.key.width = unit(2.2, "line"),
+  legend.position=c(0.12, 0.88), legend.text = element_text(size = 10, colour = "black"), legend.key = element_rect(fill=NA), panel.border=element_rect(fill=NA, color="black", size=0.7, linetype = "solid"), legend.background = element_rect(fill =NA),  legend.title=element_blank()) + ylim(0,100) +
+ggsave("Control.tiff", units="in", width=6, height=6, dpi=1200)
+```
+
+
+
+```{r Control - Degree of dominance, message=FALSE, warning=FALSE}
+R=log(347.577599)
+S=log(17.502372)
+Five=log(73.101621)
+Nine=log(56.11375)
+Thirteen=log(198.264162)
+
+pooled=((Five+Nine+Eleven)/3)
+pooled
+
+(5.28+4.291851+4.027381)/3
+
+DF=(((2*Five)-R-S)/(R-S))
+DF
+
+DN=(((2*Nine)-R-S)/(R-S))
+DN
+
+DT=(((2*Thirteen)-R-S)/(R-S))
+DT
+
+P=(((2*4.29)-R-S)/(R-S))
+P
+
+```
+
+
+```{r}
+M=drm(Biomass~Rate, Biotype, fct=l3 (fixed=c(NA,NA,NA)), data=Data)
+summary(M)
+plot(M)
+```
+
+```{r}
+ED(M, c(50,90))
+EDcomp(M, c(50,50))
+```
+
+
+```{r Control prediction, include=FALSE}
+newdata <- expand.grid(Rate=exp(seq(log(0.5), log(1680), length=1680)))
+newdata1 <- data.frame(Biotype =c("R"), newdata)
+newdata2 <- data.frame(Biotype =c("S"), newdata)
+newdata3 <- data.frame(Biotype =c("RS/F1-5"), newdata)
+newdata4 <- data.frame(Biotype =c("SR/F1-9"), newdata)
+newdata5 <- data.frame(Biotype =c("SR/F1-13"), newdata)
+
+
+nd=rbind(newdata1, newdata2, newdata3, newdata4, newdata5)
+
+pmB <- predict(M, newdata=nd, interval="confidence")
+
+
+nd$pB <- pmB[,1] 
+nd$pBmin <- pmB[,2] 
+nd$pBmax <- pmB[,3] 
+
+
+Data$Rate0 <- Data$Rate
+Data$Rate0[Data$h0==0] <- 0.5
+```
+
+
+
+```{r Control Plot, echo=FALSE}
+c<-ggplot(Data, aes(x = Rate0, y = BR)) + 
+geom_line(data=nd, aes(x=Rate, y=pB, linetype=Biotype,  color=Biotype), size=1.2) + coord_trans(x="log") +
+  labs(fill="", y=expression(bold(paste("Biomass (g plant "^"-1",")"))), x=expression(bold(paste("Mesotrione (g ai ha "^"-1",")")))) +
+  scale_colour_manual(values = c("red", "green", "blue", "black", "orange")) +
+  scale_x_continuous(breaks=c(1, 5, 12, 26, 53, 105, 210, 420, 840, 1680)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(),
+  legend.key.width = unit(2.2, "line"),
+  legend.position=c(8.12,8.88), legend.text = element_text(size = 10, colour = "black"), legend.key = element_rect(fill=NA), panel.border=element_rect(fill=NA, color="black", size=0.7, linetype = "solid"), legend.background = element_rect(fill =NA),  legend.title=element_blank())  + #ylim(0,0.6) +
+  expand_limits(y=c(0, 0.61)) +
+ggsave("Biomassa.tiff", units="in", width=6, height=6, dpi=1000)
+```
+
+
+
+```{r Biomass - Degree of dominance, message=FALSE, warning=FALSE}
+R=log(216.385482)
+R
+S=log(11.629775)
+S
+Five=log(61.963816)
+Five
+Nine=log(46.605079)
+Nine
+Thirteen=log(183.219356)
+Thirteen
+
+4.126551+3.84171+5.210684
+
+13.17894/3
+
+pooled=(Five+Nine+Eleven)/3
+pooled
+
+
+DF=(((2*Five)-R-S)/(R-S))
+DF
+
+DN=(((2*Nine)-R-S)/(R-S))
+DN
+
+DT=(((2*Thirteen)-R-S)/(R-S))
+DT
+
+P=(((2*4.39)-R-S)/(R-S))
+P
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r Biomass Reduction Model, echo=TRUE, message=FALSE, warning=FALSE}
+Biomass=drm(BR~Rate, Biotype, fct=l3 (fixed=c(NA,NA,NA)), data=Data)
+summary(Biomass)
+```
+
+
+```{r Model selection, echo=FALSE, warning=FALSE}
+mselect(Biomass, list(LL.3(), LL.5(), l3(), l3(), W2.4(), W2.3()),
+nested = FALSE, sorted = c("IC", "Res var", "Lack of fit", "no"), linreg = FALSE, icfct = AIC)
+```
+
+```{r}
+ED(Biomass, c(50,90), type="absolute")
+EDcomp(Biomass, c(50,50), type="absolute")
+```
+
+
+```{r}
+summary(Biomass)
+```
+
+
+```{r Control prediction, include=FALSE}
+newdata <- expand.grid(Rate=exp(seq(log(0.5), log(1680), length=1680)))
+newdata1 <- data.frame(Biotype =c("R"), newdata)
+newdata2 <- data.frame(Biotype =c("R/A"), newdata)
+newdata3 <- data.frame(Biotype =c("S"), newdata)
+newdata4 <- data.frame(Biotype =c("RS/F1-5"), newdata)
+newdata5 <- data.frame(Biotype =c("SR/F1-9"), newdata)
+newdata6 <- data.frame(Biotype =c("SR/F1-13"), newdata)
+
+
+nd=rbind(newdata1, newdata2, newdata3, newdata4, newdata5, newdata6)
+
+pmB <- predict(Biomass, newdata=nd, interval="confidence")
+
+
+nd$pB <- pmB[,1] 
+nd$pBmin <- pmB[,2] 
+nd$pBmax <- pmB[,3] 
+
+
+Data$Rate0 <- Data$Rate
+Data$Rate0[Data$h0==0] <- 0.5
+```
+
+
+
+```{r Control Plot, echo=FALSE}
+b<-ggplot(Data, aes(x = Rate0, y = BR)) +  
+geom_line(data=nd, aes(x=Rate, y=pB, linetype=Biotype, color=Biotype), size=1.3) + coord_trans(x="log") +
+  labs(fill="", y="Biomass reduction (%)", x="") +
+  #scale_color_brewer(palette="Set1") +
+  scale_colour_manual(values = c("red","blue", "green", "black", "grey70", "orange"))+
+  scale_x_continuous(breaks=c(1, 5, 12, 26, 53, 105, 210, 420, 840, 1680)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(),
+  legend.key.width = unit(2.2, "line"),
+  legend.position=c(8.12,8.88), legend.text = element_text(size = 10, colour = "black"), legend.key = element_rect(fill=NA), panel.border=element_rect(fill=NA, color="black", size=0.7, linetype = "solid"), legend.background = element_rect(fill =NA),  legend.title=element_blank())  + ylim(0,100) +
+ggsave("Biomass.tiff", units="in", width=6, height=6, dpi=1000)
+```
+
+
+
+```{r Biomass - Degree of dominance}
+Rb=log(235.3591)
+Sb=log(11.8426)
+Fiveb=log(61.2558)
+Nineb=log(50.6028)
+Elevenb=log(24.8660)
+Thirteenb=log(205.8462)
+
+
+```
+
+
+
+```{r}
+C<-plot_grid(a, c, nrow=1, ncol=2, vjust=2, labels = c('A', 'B')) 
+```
+
+```{r}
+ggsave("Combined.tiff", plot = C, device = NULL, path = NULL,
+  scale = 1, units="in", width=12, height=6, dpi=1200)
+```
+
+
+
+
+
+
+

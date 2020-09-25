@@ -1,0 +1,104 @@
+---
+title: "Combined"
+author: "Maxwel C. Oliveira"
+date: "April 5, 2017"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+```
+
+```{r Dose 26, include=FALSE}
+Data=read.csv("Dose26.csv")
+str(Data)
+head(Data)
+```
+
+
+```{r}
+Data$Pedigree <-factor(Data$Pedigree, levels=c("R", "S", "F1", "F2", "BC"), labels=c("R", "S", "F1", "F2", "BC"))
+
+
+Data$Survival<-factor(Data$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+ggplot(Data, aes(y=Biomass, x=Pedigree)) + 
+geom_violin(fill="grey95") +
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") +
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="Family") +
+  coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+        panel.grid.minor = element_blank(),
+  legend.position=c(0.90,0.85), legend.text = element_text(size = 10, colour = "black"), legend.title = element_text(size = 11, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA),
+legend.background = element_rect(fill =NA)) +
+  annotate("text", x = 1.33, y = 0.8, alpha=1, label =as.character(expression(italic(paste("Below-label mesotrione dose (26 g ai ha "^"-1",")")))), parse=T) + ggsave("26.tiff", units="in", width=10, height=5, dpi=500)
+```
+
+
+```{r Dose 105}
+Data1=read.csv("Dose105.csv")
+str(Data1)
+```
+
+```{r}
+Data1$Pedigree <-factor(Data1$Pedigree, levels=c("R", "S", "F1", "F2", "BC"), labels=c("R", "S", "F1", "F2", "BC"))
+
+
+Data1$Survival<-factor(Data1$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+ggplot(Data1, aes(y=Biomass, x=Pedigree)) + 
+geom_violin(fill="grey95") +
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") +
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="Family") +
+   coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"), 
+        axis.title=element_text(size=16, face="bold"), 
+        panel.background = element_rect(fill="white", color = "black"), 
+        panel.grid.major = element_line(color = "white"), 
+  panel.grid.minor = element_blank(),
+  legend.position=c(0.90,0.85), legend.text = element_text(size = 10, colour = "black"), legend.title = element_text(size = 11, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA),
+legend.background = element_rect(fill =NA)) +
+  annotate("text", x = 1.5, y = 0.8, alpha=1, label =as.character(expression(italic(paste("Recommended mesotrione label dose  (105 g ai ha "^"-1",")")))), parse=T) + ggsave("105.tiff", units="in", width=10, height=5, dpi=500)
+```
+
+
+
+```{r Dose 420}
+Data2=read.csv("Dose420.csv")
+str(Data2)
+```
+
+```{r}
+Data2$Pedigree <-factor(Data2$Pedigree, levels=c("R", "S", "F1", "F2", "BC"), labels=c("R", "S", "F1", "F2", "BC"))
+
+
+Data2$Survival<-factor(Data2$Survival, levels=c("Died", "High", "Medium", "Low"), labels=c("Dead", "High (>80%)", "Medium (40 to 79%)", "Low (<40%)"))
+```
+
+```{r Violin Plot, echo=FALSE}
+ggplot(Data2, aes(y=Biomass, x=Pedigree)) + 
+geom_violin(fill="grey95") + 
+  scale_color_manual(values=c("black", "red", "blue", "darkgreen"), name="Plant injury level") + 
+geom_jitter(aes(color=Survival), shape=1, width = .02) + 
+  labs(fill="", y="Biomass (g)", x="Family") + 
+   coord_cartesian(ylim = c(0, 0.8)) +
+  theme(axis.text=element_text(size=12, color="black"),
+        axis.title=element_text(size=16, face="bold"),  
+        panel.background = element_rect(fill=NA, color = "black", size=4),  
+        panel.grid.major = element_line(color = "white"),  
+  panel.grid.minor = element_blank(),
+    legend.position=c(0.90,0.85), legend.text = element_text(size = 10, colour = "black"), legend.title = element_text(size = 11, face="bold", colour = "black"), legend.key = element_rect(size=2, fill=NA), 
+legend.background = element_rect(fill =NULL)) +
+  annotate("text", x = 1.2, y = 0.8, alpha=1, label =as.character(expression(italic(paste("High mesotrione dose (420 g ai ha "^"-1",")")))), parse=T) +  ggsave("420.tiff", units="in", width=10, height=5, dpi=500) 
+```
+

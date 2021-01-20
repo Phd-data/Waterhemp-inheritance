@@ -2,7 +2,7 @@
 title: "Dose Response"
 author: "Maxwel C. Oliveira"
 date: "January 12, 2017"
-output: word_document
+output: word_document 
 ---
 
   
@@ -53,7 +53,7 @@ legend('topleft', c("Resistant","Resistant + aminotriozole", "Susceptible", "SxR
 ED(Biomass, c(50), type="absolute")
 EDcomp(Biomass, c(50,50), type="absolute")
 ```
-
+ 
 
 
 

@@ -230,7 +230,7 @@ nested = FALSE, sorted = c("IC", "Res var", "Lack of fit", "no"), linreg = FALSE
 ED(Biomass, c(50,90), type="absolute")
 EDcomp(Biomass, c(50,50), type="absolute")
 ```
-
+ 
 
 ```{r}
 summary(Biomass)

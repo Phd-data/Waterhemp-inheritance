@@ -163,7 +163,7 @@ legend.background = element_rect(fill =NULL)) +
 Data1=read.csv("Dose105.csv") 
 str(Data1)
 ```
-
+ 
 ```{r}
 Data1$Population <-factor(Data1$Population, levels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"), labels=c("R", "S", "F1-8", "F1-9", "F1-13", "F2-9", "F2-13", "BC-8", "BC-9", "BC-13"))
 

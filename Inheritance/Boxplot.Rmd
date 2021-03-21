@@ -5,7 +5,7 @@ date: "January 12, 2017"
 output: word_document
 ---
 ```{r}
-library(vioplot)
+library(vioplot) 
 ```
 
 
